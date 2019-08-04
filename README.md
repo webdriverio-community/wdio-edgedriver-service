@@ -7,11 +7,11 @@ Note - this service is targeted at WDIO v5.
 
 ----
 
-This service helps you to run Microsoft WebDriver (Edge) seamlessly when running tests with the [WDIO testrunner](http://webdriver.io/guide/testrunner/gettingstarted.html). 
+This service helps you to run Microsoft WebDriver (Edge) seamlessly when running tests with the [WDIO testrunner](http://webdriver.io/guide/testrunner/gettingstarted.html).
 It uses the [Microsoft WebDriver](https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/) service that is installed as a Windows Feature on Demand.
 
 Note - this service does not require a Selenium server, but uses Microsoft WebDriver to communicate with the browser directly.
-Obvisously, it only supports:
+Obviously, it only supports:
 
 ```js
 capabilities: [{
