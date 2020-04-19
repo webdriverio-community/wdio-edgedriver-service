@@ -37,6 +37,12 @@ You can simple do it by:
 npm install wdio-edgedriver-service --save-dev
 ```
 
+For Chromium-based Edge you also need to install msedgedriver (you can point the proper version):
+
+```bash
+npm i -D msedgedriver --edgechromiumdriver_version=81.0.416.58
+```
+
 Instructions on how to install `WebdriverIO` can be found [here.](http://webdriver.io/guide/getstarted/install.html)
 
 ## Configuration

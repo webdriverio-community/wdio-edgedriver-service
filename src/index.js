@@ -35,7 +35,8 @@ exports.default = class EdgeService {
         }
 
         const path = process.platform === 'win32' ?
-            (fs.existsSync('c:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe') ? 'msedgedriver.exe' : 'MicrosoftWebDriver.exe') :
+            (fs.existsSync('c:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe') ||
+                fs.existsSync('c:\\Program Files\\Microsoft\\Edge\\Application\\msedge.exe') ? require('msedgedriver').path : 'MicrosoftWebDriver.exe') :
             'msedgedriver';
 
         this.process = require('child_process').execFile(path, this.edgeDriverArgs);
