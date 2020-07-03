@@ -29,7 +29,7 @@ exports.default = class EdgeService {
         };
     }
 
-    onComplete(config) {
+    onComplete(exitCode, config) {
         if (config.edgeDriverPersistent) {
             this._stopDriver();
         }
