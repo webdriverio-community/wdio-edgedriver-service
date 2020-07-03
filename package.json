@@ -1,9 +1,12 @@
 {
   "name": "wdio-edgedriver-service",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "WebdriverIO service to start & stop EdgeDriver",
   "main": "src/index.js",
-  "scripts": {},
+  "scripts": {
+    "test": "wdio run wdio.conf.js",
+    "prepare-test": "node node_modules/require-self/bin/require-self"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/RafalSkorka/wdio-edgedriver-service.git"
@@ -11,7 +14,9 @@
   "keywords": [
     "wdio",
     "edgedriver",
-    "webdriver"
+    "webdriver",
+    "wdio-plugin",
+    "wdio-service"
   ],
   "author": "Rafal Skorka",
   "license": "MIT",
@@ -19,8 +24,16 @@
     "url": "https://github.com/RafalSkorka/wdio-edgedriver-service/issues"
   },
   "homepage": "https://github.com/RafalSkorka/wdio-edgedriver-service#readme",
-  "devDependencies": {},
+  "devDependencies": {
+    "@wdio/cli": "^6.1.24",
+    "@wdio/local-runner": "^6.1.24",
+    "@wdio/mocha-framework": "^6.1.19",
+    "@wdio/sync": "^6.1.14",
+    "msedgedriver": "^83.0.0",
+    "require-self": "^0.2.3"
+  },
   "dependencies": {
-    "fs-extra": "^8.1.0"
+    "fs-extra": "^9.0.1",
+    "get-port": "^5.1.1"
   }
 }

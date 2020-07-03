@@ -1,8 +1,6 @@
 const fs = require('fs-extra');
 const path = require('path');
-
-const DEFAULT_LOG_FILENAME = 'EdgeDriver.txt'
-const FILE_EXTENSION_REGEX = /\.[0-9a-z]+$/i
+const getPort = require('get-port');
 
 /**
  * Resolves the given path into a absolute path and appends the default filename as fallback when the provided path is a directory.
@@ -11,6 +9,7 @@ const FILE_EXTENSION_REGEX = /\.[0-9a-z]+$/i
  * @return {String}                 absolute file path
  */
 function getFilePath(filePath, defaultFilename) {
+    const FILE_EXTENSION_REGEX = /\.[0-9a-z]+$/i
     let absolutePath = path.resolve(filePath)
     if (!FILE_EXTENSION_REGEX.test(path.basename(absolutePath))) {
         absolutePath = path.join(absolutePath, defaultFilename);
@@ -19,45 +18,73 @@ function getFilePath(filePath, defaultFilename) {
 }
 
 exports.default = class EdgeService {
-    constructor() {
-        this.edgeDriverLogs = null;
-        this.edgeDriverArgs = null;
-        this.logToStdout = false;
-        return this;
+    async onPrepare(config, capabilities) {
+        if (config.edgeDriverPersistent) {
+            await this._startDriver(config);
+            capabilities.forEach(c => {
+                if (c.browserName.match(/MicrosoftEdge/i)) {
+                    c.port = config.port;
+                }
+            });
+        };
     }
 
-    onPrepare(config) {
-        this.edgeDriverArgs = config.edgeDriverArgs || [];
-        this.edgeDriverLogs = config.edgeDriverLogs;
+    onComplete(config) {
+        if (config.edgeDriverPersistent) {
+            this._stopDriver();
+        }
+    }
 
-        if (!this.edgeDriverArgs.find(arg => arg.startsWith('--port')) && config.port) {
-            this.edgeDriverArgs.push(`--port=${config.port}`);
+    async beforeSession(config) {
+        if (!config.edgeDriverPersistent) {
+            await this._startDriver(config);
+        }
+    }
+
+    afterSession(config) {
+        if (!config.edgeDriverPersistent) {
+            this._stopDriver();
+        }
+    }
+
+    async _startDriver(config) {
+        let edgeDriverArgs = config.edgeDriverArgs || [];
+        let edgeDriverLogs = config.edgeDriverLogs;
+        const isChromiumEdge = fs.existsSync('c:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe') ||
+            fs.existsSync('c:\\Program Files\\Microsoft\\Edge\\Application\\msedge.exe');
+
+        if (config.edgeDriverRandomPort !== false) {
+            config.port = await getPort();
         }
 
-        const path = process.platform === 'win32' ?
-            (fs.existsSync('c:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe') ||
-                fs.existsSync('c:\\Program Files\\Microsoft\\Edge\\Application\\msedge.exe') ? require('msedgedriver').path : 'MicrosoftWebDriver.exe') :
+        edgeDriverArgs.push(`--port=${config.port}`);
+
+        let options = {};
+        let callback;
+        if (typeof edgeDriverLogs === 'string') {
+            const DEFAULT_LOG_FILENAME = `EdgeDriver-${config.port}.log`
+            const logFile = getFilePath(edgeDriverLogs, DEFAULT_LOG_FILENAME);
+            fs.ensureFileSync(logFile);
+            if (isChromiumEdge) {
+                edgeDriverArgs.push(`--log-path=${logFile}`)
+            } else {
+                callback = function (error, stdout, stderr) {
+                    fs.writeFileSync(logFile, stdout);
+                };
+            }
+        }
+
+        const serverPath = process.platform === 'win32' ?
+            (isChromiumEdge ? require('msedgedriver').path : 'MicrosoftWebDriver.exe') :
             'msedgedriver';
-
-        this.process = require('child_process').execFile(path, this.edgeDriverArgs);
-
-        if (typeof this.edgeDriverLogs === 'string') {
-            this._redirectLogStream();
-        }
+        this.process = require('child_process').execFile(serverPath, edgeDriverArgs, options, callback);
     }
 
-    onComplete() {
+    _stopDriver() {
         if (this.process !== null) {
             this.process.kill();
+            this.process = null;
         }
-    }
-
-    _redirectLogStream() {
-        const logFile = getFilePath(this.edgeDriverLogs, DEFAULT_LOG_FILENAME);
-        fs.ensureFileSync(logFile);
-        const logStream = fs.createWriteStream(logFile, { flags: 'w' });
-        this.process.stdout.pipe(logStream);
-        this.process.stderr.pipe(logStream);
     }
 }
 

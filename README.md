@@ -1,17 +1,18 @@
 WDIO EdgeDriver Service
 ================================
 
-(Based entirely on [wdio-chromedriver-service](https://www.npmjs.com/package/wdio-chromedriver-service).)
-
-Note - this service is targeted at WDIO v5.
+Note - this service is targeted at WDIO v6.
 
 ----
 
-This service helps you to run Microsoft WebDriver (Edge) seamlessly when running tests with the [WDIO testrunner](http://webdriver.io/guide/testrunner/gettingstarted.html).
-It uses the [Microsoft WebDriver](https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/) service that is installed as a Windows Feature on Demand.
+This service helps you to run Microsoft WebDriver (Edge) seamlessly when running tests with the
+[WDIO testrunner](https://webdriver.io/docs/gettingstarted.html).
 
-Note - this service does not require a Selenium server, but uses Microsoft WebDriver to communicate with the browser directly.
-Obviously, it only supports:
+This service does not require a Selenium server, but uses the
+[Microsoft WebDriver](https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/) service that is installed
+as a Windows Feature on Demand or msedgedriver package for Chromium-based Edge.
+
+Example capabilities:
 
 ```js
 capabilities: [{
@@ -20,18 +21,6 @@ capabilities: [{
 ```
 
 ## Installation
-
-The easiest way is to keep `wdio-edgedriver-service` as a devDependency in your `package.json`.
-
-```json
-{
-  "devDependencies": {
-    "wdio-edgedriver-service": "^1.0.0"
-  }
-}
-```
-
-You can simple do it by:
 
 ```bash
 npm install wdio-edgedriver-service --save-dev
@@ -43,8 +32,6 @@ For Chromium-based Edge you also need to install msedgedriver (you can point the
 npm i -D msedgedriver --edgechromiumdriver_version=81.0.416.58
 ```
 
-Instructions on how to install `WebdriverIO` can be found [here.](http://webdriver.io/guide/getstarted/install.html)
-
 ## Configuration
 
 By design, only Edge is available. In order to use the service you need to add `edgedriver` to your service array:
@@ -52,34 +39,41 @@ By design, only Edge is available. In order to use the service you need to add `
 ```js
 // wdio.conf.js
 export.config = {
-  // port to find edgedriver
-  port: 17556, // default for EdgeDriver
-  path: '/',
-  // ...
-  services: ['edgedriver'],
+    // MANDATORY: Add edgedriver to service array.
+    // Default: empty array
+    services: ['edgedriver'],
 
-  // options
-  edgeDriverArgs: ['--port=17556'], // default for EdgeDriver
-  edgeDriverLogs: './',
-  // ...
+    // OPTIONAL: Provide custom port for edgeedriver.
+    // edgeDriverRandomPort must be set to false to use this port and maxInstances must be set to 1.
+    // Default: 4444
+    port: 17556, // default for EdgeDriver
+
+    // OPTIONAL: Arguments passed to edgedriver executable.
+    // Note: Do not specify port here, use `port` config option instead.
+    // Default: empty array
+    edgeDriverArgs: ['--verbose'],
+
+    // OPTIONAL: Location of edgedriver logs.
+    // Must be a directory if using maxInstances > 1.
+    // Could be a file name or a directory if maxInstances == 1.
+    // Logs are saved as `EdgeDriver-{portname}.log`
+    // Logs are not stored if this option is not set.
+    // Default: not set
+    edgeDriverLogs: './logs',
+
+    // OPTIONAL: Launch edgedriver once for all specs if true.
+    // Launch edgedriver for each spec separately if false.
+    // Default: false
+    edgeDriverPersistent: false,
+
+    // OPTIONAL: Use a random port for launching edgedriver.
+    // Must be set to true if maxInstances > 1.
+    // Set it to false to use the `port` config option.
+    // Default: true
+    edgeDriverRandomPort: true,
 };
 ```
 
-## Options
-
-### edgeDriverArgs
-Array of arguments to pass to the EdgeDriver executable.
-* `--port` will use wdioConfig.port if not specified
-* etc.
-
-Type: `string[]`
-### edgeDriverLogs
-Path where all logs from the EdgeDriver server should be stored.
-
-Type: `string`
-
-
-
 ----
 
-For more information on WebdriverIO see the [homepage](http://webdriver.io).
+For more information on WebdriverIO see the [homepage](https://webdriver.io).
