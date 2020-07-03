@@ -68,6 +68,7 @@ exports.default = class EdgeService {
             if (isChromiumEdge) {
                 edgeDriverArgs.push(`--log-path=${logFile}`)
             } else {
+                options.maxBuffer = 10 * 1024 * 1024;
                 callback = function (error, stdout, stderr) {
                     fs.writeFileSync(logFile, stdout);
                 };
