@@ -1,6 +1,5 @@
-src
-tests
+logs
+test
 coverage
-babel.config.js
-EdgeDriver.txt
+wdio.conf.js
 .*

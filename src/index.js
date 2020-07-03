@@ -9,8 +9,8 @@ const getPort = require('get-port');
  * @return {String}                 absolute file path
  */
 function getFilePath(filePath, defaultFilename) {
-    const FILE_EXTENSION_REGEX = /\.[0-9a-z]+$/i
-    let absolutePath = path.resolve(filePath)
+    const FILE_EXTENSION_REGEX = /\.[0-9a-z]+$/i;
+    let absolutePath = path.resolve(filePath);
     if (!FILE_EXTENSION_REGEX.test(path.basename(absolutePath))) {
         absolutePath = path.join(absolutePath, defaultFilename);
     }
