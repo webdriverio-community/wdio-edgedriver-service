@@ -16,7 +16,8 @@ Example capabilities:
 
 ```js
 capabilities: [{
-        browserName: 'MicrosoftEdge'
+        browserName: 'MicrosoftEdge',
+        maxInstances: 1 // must be 1 for EdgeHtml, can be more for ChromiumEdge.
     }]
 ```
 
