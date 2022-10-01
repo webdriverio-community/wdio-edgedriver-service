@@ -16,14 +16,10 @@ capabilities: [{
 ## Installation
 
 ```bash
-npm install wdio-edgedriver-service --save-dev
+EDGECHROMIUMDRIVER_VERSION=105.0.1343.33 npm install wdio-edgedriver-service --save-dev
 ```
 
-For Chromium-based Edge you also need to install msedgedriver (you can point the proper version):
-
-```bash
-npm i -D msedgedriver --edgechromiumdriver_version=81.0.416.58
-```
+Make sure you set the right version within the `EDGECHROMIUMDRIVER_VERSION` environment variable. Check [this page](https://msedgedriver.azureedge.net/) for all available versions.
 
 ## Configuration
 
