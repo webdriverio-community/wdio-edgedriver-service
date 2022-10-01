@@ -2,15 +2,9 @@
   "name": "wdio-edgedriver-service",
   "version": "1.2.0",
   "description": "WebdriverIO service to start & stop EdgeDriver",
-  "main": "src/index.js",
-  "scripts": {
-    "test": "wdio run wdio.conf.js",
-    "prepare-test": "node node_modules/require-self/bin/require-self"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/RafalSkorka/wdio-edgedriver-service.git"
-  },
+  "author": "Rafal Skorka",
+  "license": "MIT",
+  "homepage": "https://github.com/webdriverio-community/wdio-edgedriver-service#readme",
   "keywords": [
     "wdio",
     "edgedriver",
@@ -18,22 +12,75 @@
     "wdio-plugin",
     "wdio-service"
   ],
-  "author": "Rafal Skorka",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/RafalSkorka/wdio-edgedriver-service/issues"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/webdriverio-community/wdio-edgedriver-service.git"
   },
-  "homepage": "https://github.com/RafalSkorka/wdio-edgedriver-service#readme",
+  "bugs": {
+    "url": "https://github.com/webdriverio-community/wdio-edgedriver-service/issues"
+  },
+  "main": "./build/cjs/index.js",
+  "type": "module",
+  "module": "./build/index.js",
+  "exports": {
+    ".": [
+      {
+        "import": "./build/index.js",
+        "require": "./build/cjs/index.js"
+      },
+      "./build/cjs/index.js"
+    ]
+  },
+  "types": "./build/index.d.ts",
+  "typeScriptVersion": "3.8.3",
+  "engines": {
+    "node": "^16.13 || >=18"
+  },
+  "scripts": {
+    "build": "run-s clean compile copy",
+    "ci": "run-s test:lint build test",
+    "compile": "tsc --build tsconfig.json",
+    "copy": "cp src/cjs/package.json build/cjs",
+    "clean": "rimraf ./build",
+    "release": "release-it --github.release",
+    "release:ci": "npm run release -- --ci --npm.skipChecks --no-git.requireCleanWorkingDir",
+    "release:patch": "npm run release -- patch",
+    "release:minor": "npm run release -- minor",
+    "release:major": "npm run release -- major",
+    "test": "run-s test:*",
+    "test:lint": "eslint src tests",
+    "test:e2e": "cd tests && npx wdio run ./wdio.conf.ts",
+    "watch": "npm run compile -- --watch"
+  },
   "devDependencies": {
-    "@wdio/cli": "^6.1.24",
-    "@wdio/local-runner": "^6.1.24",
-    "@wdio/mocha-framework": "^6.1.19",
-    "@wdio/sync": "^6.1.14",
-    "msedgedriver": "^83.0.0",
-    "require-self": "^0.2.3"
+    "@types/node": "^18.7.23",
+    "@typescript-eslint/eslint-plugin": "^5.38.1",
+    "@typescript-eslint/parser": "^5.38.1",
+    "@wdio/cli": "^7.25.1",
+    "@wdio/local-runner": "^7.25.1",
+    "@wdio/mocha-framework": "^7.25.1",
+    "eslint": "^8.24.0",
+    "eslint-plugin-import": "^2.26.0",
+    "npm-run-all": "^4.1.5",
+    "release-it": "^15.4.2",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.8.4",
+    "webdriverio": "^7.25.0"
+  },
+  "peerDependencies": {
+    "@wdio/types": "^7.25.0",
+    "msedgedriver": "^91.0.0"
+  },
+  "peerDependenciesMeta": {
+    "msedgedriver": {
+      "optional": false
+    },
+    "@wdio/types": {
+      "optional": true
+    }
   },
   "dependencies": {
-    "fs-extra": "^9.0.1",
-    "get-port": "^5.1.1"
+    "fs-extra": "^10.1.0",
+    "get-port": "^6.1.2"
   }
 }

@@ -1,4 +1,4 @@
-const assert = require('assert')
+import assert from 'assert'
 
 describe('webdriver.io page - second', () => {
     it('should have the right title - second', () => {
