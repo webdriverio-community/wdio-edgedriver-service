@@ -1,9 +1,9 @@
 import path from 'node:path'
-import type { Options, Services } from '@wdio/types'
+import type { Options } from '@wdio/types'
 
 // @ts-expect-error for some reason not a module
 // eslint-disable-next-line import/default
-import GeckoDriverLauncher from '../build/cjs/index.js'
+import EdgeDriverLauncher from '../build/cjs/index.js'
 
 export const config: Options.Testrunner = {
     specs: [path.resolve(__dirname, 'specs', '**', '*.ts')],
@@ -12,7 +12,7 @@ export const config: Options.Testrunner = {
         browserName: 'MicrosoftEdge'
     }],
     services: [[
-        GeckoDriverLauncher,
+        EdgeDriverLauncher,
         {
             args: ['--verbose'],
             outputDir: './logs',
