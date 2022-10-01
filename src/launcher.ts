@@ -79,6 +79,7 @@ export default class EdgedriverLauncher {
         const driverPath = this.options.edgedriverCustomPath || msedgedriver.path
         log.info(`Start Edgedriver (${driverPath}) with args ${args.join(' ')}`)
         this.process = cp.execFile(driverPath, args, options, callback)
+        log.info(`Edgedriver started on pid ${this.process.pid}`)
 
         process.on('exit', this._stopDriver.bind(this))
         process.on('SIGINT', this._stopDriver.bind(this))

@@ -13,7 +13,7 @@ export const config: Options.Testrunner = {
         browserName: 'MicrosoftEdge'
     }],
     services: [[
-        EdgeDriverLauncher,
+        EdgeDriverLauncher.launcher,
         {
             args: ['--verbose'],
             outputDir: './logs',
