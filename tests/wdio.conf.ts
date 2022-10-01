@@ -6,6 +6,7 @@ import type { Options } from '@wdio/types'
 import EdgeDriverLauncher from '../build/cjs/index.js'
 
 export const config: Options.Testrunner = {
+    automationProtocol: 'webdriver',
     specs: [path.resolve(__dirname, 'specs', '**', '*.ts')],
     capabilities: [{
         maxInstances: 2,
