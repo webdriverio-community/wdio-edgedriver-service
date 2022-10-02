@@ -1,7 +1,8 @@
 import fsp from 'node:fs/promises'
-import cp, { ChildProcess, ExecFileOptions } from 'child_process'
+import cp, { ChildProcess } from 'child_process'
 
 import fs from 'fs-extra'
+import split2 from 'split2'
 import getPort from 'get-port'
 import msedgedriver from 'msedgedriver'
 import logger from '@wdio/logger'
@@ -63,23 +64,21 @@ export default class EdgedriverLauncher {
          */
         this._mapCapabilities(path, port)
 
-        const options: ExecFileOptions = {}
-        let callback: any = () => { /* NOOP */ }
         if (outputDir) {
             const logFile = getFilePath(outputDir, logfileName)
             await fs.ensureFile(logFile)
-            if (isChromiumEdge) {
-                args.push(`--log-path=${logFile}`)
-            } else {
-                options.maxBuffer = 10 * 1024 * 1024
-                callback = (error: never, stdout: string, stderr: never) => fsp.writeFile(logFile, stdout)
-            }
+            args.push(`--log-path=${logFile}`, '--verbose')
         }
 
         const driverPath = this.options.edgedriverCustomPath || msedgedriver.path
         log.info(`Start Edgedriver (${driverPath}) with args ${args.join(' ')}`)
-        this.process = cp.execFile(driverPath, args, options, callback)
+        this.process = cp.spawn(driverPath, args)
         log.info(`Edgedriver started on pid ${this.process.pid}`)
+
+        if (typeof this.options.outputDir !== 'string') {
+            this.process.stdout?.pipe(split2()).on('data', log.info)
+            this.process.stderr?.pipe(split2()).on('data', log.warn)
+        }
 
         process.on('exit', this._stopDriver.bind(this))
         process.on('SIGINT', this._stopDriver.bind(this))
