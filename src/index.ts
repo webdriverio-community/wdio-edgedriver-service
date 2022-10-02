@@ -1,6 +1,3 @@
-import EdgeDriverLauncher from './launcher.js'
-
-export default class EdgeService {}
-export const launcher = EdgeDriverLauncher
-
+import EdgeServiceImport from './service.js'
+export default EdgeServiceImport
 export * from './types.js'

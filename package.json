@@ -55,6 +55,7 @@
   "devDependencies": {
     "@types/node": "^18.7.23",
     "@types/split2": "^3.2.1",
+    "@types/tcp-port-used": "^1.0.1",
     "@typescript-eslint/eslint-plugin": "^5.38.1",
     "@typescript-eslint/parser": "^5.38.1",
     "@wdio/cli": "^7.25.1",
@@ -85,6 +86,7 @@
     "@wdio/logger": "^8.0.0-alpha.219",
     "fs-extra": "^10.1.0",
     "get-port": "^6.1.2",
-    "split2": "^4.1.0"
+    "split2": "^4.1.0",
+    "tcp-port-used": "^1.0.2"
   }
 }

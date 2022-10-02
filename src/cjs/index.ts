@@ -1,20 +1,19 @@
-exports.default = class EdgeService {}
-exports.launcher = class CJSEdgedriverLauncher {
+module.exports = class EdgeService {
     private instance?: any
 
-    constructor(options: any, capabilities: any, config: any) {
-        this.instance = import('../launcher.js').then((EdgedriverLauncher) => {
-            return new EdgedriverLauncher.default(options, capabilities, config)
+    constructor(options: any) {
+        this.instance = import('../service.js').then((EdgedriverLauncher) => {
+            return new EdgedriverLauncher.default(options)
         })
     }
 
-    async onPrepare () {
+    async beforeSession (config: any, capabilities: any, ___: never, cid: string) {
         const instance = await this.instance
-        return instance.onPrepare()
+        return instance.beforeSession(config, capabilities, cid)
     }
 
-    async onComplete () {
+    async afterSession () {
         const instance = await this.instance
-        return instance.onComplete()
+        return instance.afterSession()
     }
 }

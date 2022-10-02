@@ -3,7 +3,7 @@ import type { Options } from '@wdio/types'
 
 // @ts-expect-error for some reason not a module
 // eslint-disable-next-line import/default
-import EdgeDriverLauncher from '../build/cjs/index.js'
+import EdgeDriver from '../build/cjs/index.js'
 
 export const config: Options.Testrunner = {
     automationProtocol: 'webdriver',
@@ -13,7 +13,7 @@ export const config: Options.Testrunner = {
         browserName: 'MicrosoftEdge'
     }],
     services: [[
-        EdgeDriverLauncher.launcher,
+        EdgeDriver,
         {
             args: ['--verbose'],
             outputDir: './logs',

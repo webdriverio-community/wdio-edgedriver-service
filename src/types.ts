@@ -1,10 +1,6 @@
-export interface EdgedriverServiceOptions {
-    /**
-     * Provide custom port for Edgeedriver. If not set a random
-     * port is choosen.
-     */
-    port?: number
+import { Capabilities } from '@wdio/types'
 
+export interface EdgedriverServiceOptions {
     /**
      * The path on which the driver should run on
      */
@@ -24,9 +20,10 @@ export interface EdgedriverServiceOptions {
 
     /**
      * The name of the log file to be written in `outputDir`.
-     * @default wdio-edgedriver.log
+     * @param {Capabilities.Capabilities} caps  capabilities to be used for the session
+     * @param {string}                    cid   worker id
      */
-    logFileName?: string
+    logFileName?: (caps: Capabilities.Capabilities, cid: string) => string
 
     /**
      * To use a custome chromedriver different than the one installed through "chromedriver npm module", provide the path.
