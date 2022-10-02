@@ -103,6 +103,7 @@ export default class EdgedriverLauncher {
         if (this.process) {
             log.info(`Shutting down Edgedriver for ${process.env.WDIO_WORKER_ID}`)
             this.process.kill()
+            delete this.process
         }
     }
 
