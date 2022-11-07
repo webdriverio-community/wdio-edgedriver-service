@@ -16,7 +16,7 @@ capabilities: [{
 ## Installation
 
 ```bash
-EDGECHROMIUMDRIVER_VERSION=105.0.1343.33 npm install wdio-edgedriver-service --save-dev
+EDGECHROMIUMDRIVER_VERSION=107.0.1418.8 npm install wdio-edgedriver-service --save-dev
 ```
 
 Make sure you set the right version within the `EDGECHROMIUMDRIVER_VERSION` environment variable. Check [this page](https://msedgedriver.azureedge.net/) for all available versions.
