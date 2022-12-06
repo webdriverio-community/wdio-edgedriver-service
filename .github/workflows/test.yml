@@ -26,3 +26,8 @@ jobs:
       run: npm run build
     - name: Run Test
       run: npm run test
+    - uses: actions/upload-artifact@v3
+      if: failure()
+      with:
+        name: logs
+        path: tests/logs
