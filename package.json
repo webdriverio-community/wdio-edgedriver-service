@@ -61,6 +61,7 @@
     "@wdio/cli": "^8.0.6",
     "@wdio/local-runner": "^8.0.6",
     "@wdio/mocha-framework": "^8.0.6",
+    "@wdio/types": "^8.0.6",
     "eslint": "^8.29.0",
     "eslint-plugin-import": "^2.26.0",
     "msedgedriver": "^91.0.0",
