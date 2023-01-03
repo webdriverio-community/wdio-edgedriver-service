@@ -1,6 +1,6 @@
 {
   "name": "wdio-edgedriver-service",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "WebdriverIO service to start & stop EdgeDriver",
   "author": "Rafal Skorka",
   "license": "MIT",
