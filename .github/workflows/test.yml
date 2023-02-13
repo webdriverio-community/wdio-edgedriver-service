@@ -21,7 +21,7 @@ jobs:
     - name: Install Dependencies
       run: npm ci
       env:
-        EDGECHROMIUMDRIVER_VERSION: 107.0.1418.8
+        EDGECHROMIUMDRIVER_VERSION: 110.0.1587.41
     - name: Build Project
       run: npm run build
     - name: Run Test
