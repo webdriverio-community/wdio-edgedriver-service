@@ -11,20 +11,21 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js
-      uses: actions/setup-node@v1
+    - uses: actions/checkout@v3
+    - name: 💚 Use Node.js
+      uses: actions/setup-node@v3
       with:
-        node-version: 18.x
-    - name: Install Dependencies
+        node-version: 20.x
+    - name: 🚧 Install Dependencies
       run: npm ci
-      env:
-        EDGECHROMIUMDRIVER_VERSION: 111.0.1661.54
-    - name: Build Project
+    - name: 📦 Build Project
       run: npm run build
-    - name: Run Test
+    - name: 🧪 Run Test
       run: npm run test
     - uses: actions/upload-artifact@v3
       if: failure()
