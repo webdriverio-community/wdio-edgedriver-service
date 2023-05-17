@@ -1,7 +1,7 @@
+import path from 'node:path'
+import fsp from 'node:fs/promises'
 import type { ChildProcess } from 'child_process'
 
-import fs from 'fs-extra'
-import split2 from 'split2'
 import getPort from 'get-port'
 import logger from '@wdio/logger'
 import waitPort from 'wait-port'
@@ -82,7 +82,7 @@ export default class EdgedriverService {
                 : `wdio-edgedriver-service-${cid}.log`
 
             const logFile = getFilePath(this.#options.outputDir, logfileName)
-            await fs.ensureFile(logFile)
+            await fsp.mkdir(path.dirname(logFile), { recursive: true })
             this.#options.edgedriverOptions.logPath = logFile
         }
 
