@@ -5,7 +5,7 @@ import split2 from 'split2'
 import getPort from 'get-port'
 import logger from '@wdio/logger'
 import waitPort from 'wait-port'
-import { start } from 'edgedriver'
+import { start, download } from 'edgedriver'
 import { SevereServiceError } from 'webdriverio'
 import type { Options, Capabilities } from '@wdio/types'
 
@@ -32,15 +32,19 @@ export default class EdgedriverService {
             outputDir: config.outputDir,
             edgedriverOptions: {
                 baseUrl: '/'
-            }
+            },
+            ...(options || {})
         }
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    onPrepare () {
+        return download(this.#options.edgedriverOptions?.edgeDriverVersion)
+    }
+
     beforeSession (
-        config: Options.Testrunner,
-        capabilities: Capabilities.Capabilities | Capabilities.MultiRemoteCapabilities,
         _: never,
+        capabilities: Capabilities.Capabilities | Capabilities.MultiRemoteCapabilities,
+        __: never,
         cid: string
     ) {
         /**
