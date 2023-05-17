@@ -55,7 +55,7 @@ Type: `string`
 The name of the log file to be written in `outputDir`. Requires `outputDir` to be set in WebdriverIO config or as service option.
 
 Type: `string`<br />
-Default: `wdio-geckodriver-service-<cid>.log`
+Default: `wdio-edgedriver-service-<cid>.log`
 
 ### `edgedriverOptions`
 
