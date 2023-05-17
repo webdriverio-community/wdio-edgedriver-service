@@ -23,7 +23,7 @@ export default class EdgedriverService {
     #options: EdgedriverServiceOptions
 
     constructor (
-        options: EdgedriverServiceOptions,
+        options: EdgedriverServiceOptions = {},
         _: never,
         config: Options.Testrunner
     ) {
@@ -31,9 +31,12 @@ export default class EdgedriverService {
         this.#options = {
             outputDir: config.outputDir,
             edgedriverOptions: {
-                baseUrl: '/'
+                baseUrl: '/',
+                // set log level if user indicates that they want logs stored
+                ...(config.outputDir ? { logLevel: 'ALL' } : {}),
+                ...options.edgedriverOptions
             },
-            ...(options || {})
+            ...options
         }
     }
 
@@ -73,19 +76,18 @@ export default class EdgedriverService {
          */
         this.#mapCapabilities(capabilities, baseUrl, port)
 
-        this.#process = await start({ ...this.#options.edgedriverOptions, port, baseUrl })
-        log.info(`Edgedriver started for worker ${process.env.WDIO_WORKER_ID} on port ${port} with args: ${this.#process.spawnargs.join(' ')}`)
-
-        if (this.#options.outputDir) {
+        if (this.#options.outputDir && this.#options.edgedriverOptions) {
             const logfileName = typeof this.#options.logFileName === 'function'
                 ? this.#options.logFileName(capabilities, cid)
-                : `wdio-edgedriver-${port}.log`
+                : `wdio-edgedriver-service-${cid}.log`
 
             const logFile = getFilePath(this.#options.outputDir, logfileName)
             await fs.ensureFile(logFile)
-            this.#process.stdout?.pipe(split2()).on('data', log.info)
-            this.#process.stderr?.pipe(split2()).on('data', log.warn)
+            this.#options.edgedriverOptions.logPath = logFile
         }
+
+        this.#process = await start({ ...this.#options.edgedriverOptions, port, baseUrl })
+        log.info(`Edgedriver started for worker ${process.env.WDIO_WORKER_ID} on port ${port} with args: ${this.#process.spawnargs.join(' ')}`)
 
         const { open } = await waitPort({
             timeout: POLL_TIMEOUT,
