@@ -1,24 +1,27 @@
 import path from 'node:path'
-import type { Options } from '@wdio/types'
+import url from 'node:url'
 
-// @ts-expect-error for some reason not a module
-// eslint-disable-next-line import/default
-import EdgeDriver from '../build/cjs/index.js'
+import type { Options, Services } from '@wdio/types'
+
+import EdgeDriver from '../build/index.js'
+
+const __dirname = url.fileURLToPath(new URL('.', import.meta.url))
 
 export const config: Options.Testrunner = {
     automationProtocol: 'webdriver',
     specs: [path.resolve(__dirname, 'specs', '**', '*.ts')],
     capabilities: [{
         maxInstances: 2,
-        browserName: 'MicrosoftEdge'
+        browserName: 'MicrosoftEdge',
+        'ms:edgeOptions': {
+            args: ['--headless']
+        }
     }],
     services: [[
-        EdgeDriver,
-        {
-            args: ['--verbose'],
-            outputDir: './logs',
-        }
-    ]],
+        EdgeDriver, {
+            outputDir: path.join(__dirname, 'logs')
+        }] as Services.ServiceEntry
+    ],
     connectionRetryTimeout: 30000,
     connectionRetryCount: 0,
     framework: 'mocha',

@@ -3,8 +3,8 @@ import type { ChildProcess } from 'child_process'
 import fs from 'fs-extra'
 import split2 from 'split2'
 import getPort from 'get-port'
-import tcpPortUsed from 'tcp-port-used'
 import logger from '@wdio/logger'
+import waitPort from 'wait-port'
 import { start } from 'edgedriver'
 import { SevereServiceError } from 'webdriverio'
 import type { Options, Capabilities } from '@wdio/types'
@@ -16,7 +16,7 @@ import type { EdgedriverServiceOptions } from './types'
 const POLL_INTERVAL = 100
 const POLL_TIMEOUT = 10000
 
-const log = logger('edgedriver')
+const log = logger('wdio-edgedriver-service')
 
 export default class EdgedriverService {
     #process?: ChildProcess
@@ -65,12 +65,11 @@ export default class EdgedriverService {
         const baseUrl = this.#options.edgedriverOptions?.baseUrl || '/'
 
         /**
-         * update capability connection options to connect
-         * to chromedriver
+         * update capability connection options to connect to EdgeDriver
          */
         this.#mapCapabilities(capabilities, baseUrl, port)
 
-        this.#process = await start(this.#options.edgedriverOptions)
+        this.#process = await start({ ...this.#options.edgedriverOptions, port, baseUrl })
         log.info(`Edgedriver started for worker ${process.env.WDIO_WORKER_ID} on port ${port} with args: ${this.#process.spawnargs.join(' ')}`)
 
         if (this.#options.outputDir) {
@@ -84,13 +83,13 @@ export default class EdgedriverService {
             this.#process.stderr?.pipe(split2()).on('data', log.warn)
         }
 
-        try {
-            await tcpPortUsed.waitUntilUsed(port, POLL_INTERVAL, POLL_TIMEOUT)
-        } catch (err) {
-            throw new SevereServiceError(
-                `Couldn't start Chromedriver: ${err.message}\n` +
-                'Chromedriver failed to start.'
-            )
+        const { open } = await waitPort({
+            timeout: POLL_TIMEOUT,
+            interval: POLL_INTERVAL,
+            port
+        })
+        if (!open) {
+            throw new SevereServiceError('EdgeDriver failed to start.')
         }
 
         process.on('exit', this.#stopDriver.bind(this))
