@@ -1,4 +1,4 @@
-# WDIO EdgeDriver Service [![Tests](https://github.com/webdriverio-community/wdio-edgedriver-service/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/webdriverio-community/wdio-edgedriver-service/actions/workflows/test.yml)
+# WDIO EdgeDriver Service [![Tests](https://github.com/webdriverio-community/wdio-edgedriver-service/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/webdriverio-community/wdio-edgedriver-service/actions/workflows/test.yml) [![Audit](https://github.com/webdriverio-community/wdio-edgedriver-service/actions/workflows/audit.yml/badge.svg)](https://github.com/webdriverio-community/wdio-edgedriver-service/actions/workflows/audit.yml)
 
 This service helps you to run Microsoft WebDriver (Edge) seamlessly when running tests with the [WDIO testrunner](https://webdriver.io/docs/gettingstarted.html).
 
