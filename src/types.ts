@@ -1,20 +1,9 @@
-import { Capabilities } from '@wdio/types'
+import type { Capabilities } from '@wdio/types'
+import type { EdgedriverParameters } from 'edgedriver'
 
 export interface EdgedriverServiceOptions {
     /**
-     * The path on which the driver should run on
-     */
-    path?: string
-
-    /**
-     * Arguments passed to edgedriver executable.
-     * Note: Do not specify port here, use `port` config option instead.
-     * @example ['--verbose']
-     */
-    args?: string[]
-
-    /**
-     * Location of edgedriver logs.
+     * Location of EdgeDriver logs.
      */
     outputDir?: string
 
@@ -26,7 +15,8 @@ export interface EdgedriverServiceOptions {
     logFileName?: (caps: Capabilities.Capabilities, cid: string) => string
 
     /**
-     * To use a custome chromedriver different than the one installed through "chromedriver npm module", provide the path.
+     * Options passed to EdgeDriver, see https://github.com/webdriverio-community/node-edgedriver#options
+     * for more informatiomn
      */
-     edgedriverCustomPath?: string
+    edgedriverOptions?: EdgedriverParameters
 }

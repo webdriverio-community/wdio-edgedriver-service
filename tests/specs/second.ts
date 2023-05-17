@@ -1,3 +1,5 @@
+import { browser } from '@wdio/globals'
+
 describe('webdriver.io page - second', () => {
     it('should have the right title - second', async () => {
         await browser.url('https://webdriver.io')

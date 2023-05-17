@@ -1,11 +1,11 @@
-import cp, { ChildProcess } from 'child_process'
+import type { ChildProcess } from 'child_process'
 
 import fs from 'fs-extra'
 import split2 from 'split2'
 import getPort from 'get-port'
 import tcpPortUsed from 'tcp-port-used'
-import msedgedriver from 'msedgedriver'
 import logger from '@wdio/logger'
+import { start } from 'edgedriver'
 import { SevereServiceError } from 'webdriverio'
 import type { Options, Capabilities } from '@wdio/types'
 
@@ -13,17 +13,27 @@ import { pkg } from './constants.js'
 import { getFilePath, isMultiremote, isEdge } from './utils.js'
 import type { EdgedriverServiceOptions } from './types'
 
-const DEFAULT_PATH = '/'
 const POLL_INTERVAL = 100
 const POLL_TIMEOUT = 10000
 
 const log = logger('edgedriver')
 
-export default class EdgedriverLauncher {
-    private process?: ChildProcess
+export default class EdgedriverService {
+    #process?: ChildProcess
+    #options: EdgedriverServiceOptions
 
-    constructor (private options: EdgedriverServiceOptions) {
-        log.info(`Initiate Edgedriver Launcher (v${pkg.version})`)
+    constructor (
+        options: EdgedriverServiceOptions,
+        _: never,
+        config: Options.Testrunner
+    ) {
+        log.info(`Initiate Edgedriver Service (v${pkg.version})`)
+        this.#options = {
+            outputDir: config.outputDir,
+            edgedriverOptions: {
+                baseUrl: '/'
+            }
+        }
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -40,49 +50,38 @@ export default class EdgedriverLauncher {
             return
         }
 
-        return this._startDriver(config, capabilities, cid)
+        return this.#startDriver(capabilities, cid)
     }
 
     afterSession () {
-        return this._stopDriver()
+        return this.#stopDriver()
     }
 
-    async _startDriver (
-        config: Options.Testrunner,
+    async #startDriver (
         capabilities: Capabilities.Capabilities | Capabilities.MultiRemoteCapabilities,
         cid: string
     ) {
-        const outputDir = this.options.outputDir || config.outputDir
-        const args = this.options.args || []
-        const path = this.options.path || DEFAULT_PATH
-
-        const port = await getPort()
-        args.push(`--port=${port}`)
+        const port = this.#options.edgedriverOptions?.port || await getPort()
+        const baseUrl = this.#options.edgedriverOptions?.baseUrl || '/'
 
         /**
          * update capability connection options to connect
          * to chromedriver
          */
-        this._mapCapabilities(capabilities, path, port)
+        this.#mapCapabilities(capabilities, baseUrl, port)
 
-        if (outputDir) {
-            const logfileName = typeof this.options.logFileName === 'function'
-                ? this.options.logFileName(capabilities, cid)
+        this.#process = await start(this.#options.edgedriverOptions)
+        log.info(`Edgedriver started for worker ${process.env.WDIO_WORKER_ID} on port ${port} with args: ${this.#process.spawnargs.join(' ')}`)
+
+        if (this.#options.outputDir) {
+            const logfileName = typeof this.#options.logFileName === 'function'
+                ? this.#options.logFileName(capabilities, cid)
                 : `wdio-edgedriver-${port}.log`
 
-            const logFile = getFilePath(outputDir, logfileName)
+            const logFile = getFilePath(this.#options.outputDir, logfileName)
             await fs.ensureFile(logFile)
-            args.push(`--log-path=${logFile}`, '--verbose')
-        }
-
-        const driverPath = this.options.edgedriverCustomPath || msedgedriver.path
-        log.info(`Start Edgedriver (${driverPath}) with args ${args.join(' ')}`)
-        this.process = cp.spawn(driverPath, args)
-        log.info(`Edgedriver started for worker ${process.env.WDIO_WORKER_ID} on port ${port}`)
-
-        if (typeof this.options.outputDir !== 'string') {
-            this.process.stdout?.pipe(split2()).on('data', log.info)
-            this.process.stderr?.pipe(split2()).on('data', log.warn)
+            this.#process.stdout?.pipe(split2()).on('data', log.info)
+            this.#process.stderr?.pipe(split2()).on('data', log.warn)
         }
 
         try {
@@ -94,20 +93,20 @@ export default class EdgedriverLauncher {
             )
         }
 
-        process.on('exit', this._stopDriver.bind(this))
-        process.on('SIGINT', this._stopDriver.bind(this))
-        process.on('uncaughtException', this._stopDriver.bind(this))
+        process.on('exit', this.#stopDriver.bind(this))
+        process.on('SIGINT', this.#stopDriver.bind(this))
+        process.on('uncaughtException', this.#stopDriver.bind(this))
     }
 
-    _stopDriver () {
-        if (this.process) {
+    #stopDriver () {
+        if (this.#process) {
             log.info(`Shutting down Edgedriver for ${process.env.WDIO_WORKER_ID}`)
-            this.process.kill()
-            delete this.process
+            this.#process.kill()
+            this.#process = undefined
         }
     }
 
-    _mapCapabilities (capabilities: Capabilities.Capabilities | Capabilities.MultiRemoteCapabilities, path: string, port: number) {
+    #mapCapabilities (capabilities: Capabilities.Capabilities | Capabilities.MultiRemoteCapabilities, path: string, port: number) {
         if (isMultiremote(capabilities)) {
             for (const cap in capabilities) {
                 const caps = (capabilities as Capabilities.MultiRemoteCapabilities)[cap].capabilities as Capabilities.Capabilities
