@@ -2,8 +2,7 @@
 
 This service helps you to run Microsoft WebDriver (Edge) seamlessly when running tests with the [WDIO testrunner](https://webdriver.io/docs/gettingstarted.html).
 
-This service does not require a Selenium server, but uses the
-[Microsoft WebDriver](https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/) that is installed as a Windows Feature on Demand or msedgedriver package for Chromium-based Edge.
+It does not require a Selenium server, but uses the [Microsoft WebDriver](https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/) that is installed as a Windows Feature on Demand or as [`edgedriver`](https://www.npmjs.com/package/edgedriver) NPM package for Chromium-based Edge.
 
 Example capabilities:
 
@@ -16,10 +15,8 @@ capabilities: [{
 ## Installation
 
 ```bash
-EDGECHROMIUMDRIVER_VERSION=107.0.1418.8 npm install wdio-edgedriver-service --save-dev
+npm install wdio-edgedriver-service --save-dev
 ```
-
-Make sure you set the right version within the `EDGECHROMIUMDRIVER_VERSION` environment variable. Check [this page](https://msedgedriver.azureedge.net/) for all available versions.
 
 ## Configuration
 
@@ -34,50 +31,18 @@ export.config = {
         'edgedriver',
         // service options
         {
-            // OPTIONAL: Provide custom port for edgeedriver.
-            // edgeDriverRandomPort must be set to false to use this port and maxInstances must be set to 1.
-            // Default: 4444
-            port: 17556, // default for EdgeDriver
-
-            // OPTIONAL: Arguments passed to edgedriver executable.
-            // Note: Do not specify port here, use `port` config option instead.
-            // Default: empty array
-            args: ['--verbose'],
-
-            // OPTIONAL: Location of edgedriver logs.
-            // Must be a directory if using maxInstances > 1.
-            // Could be a file name or a directory if maxInstances == 1.
-            // Logs are saved as `EdgeDriver-{portname}.log`
-            // Logs are not stored if this option is not set.
-            // Default: not set
-            outputDir: './logs'
+            outputDir: './logs',
+            // see https://github.com/webdriverio-community/node-edgedriver#options for more
+            // options that can be passed into EdgeDriver directly
+            edgedriverOptions: {
+                verbose: true
+            }
         }
     ],
 };
 ```
 
 ## Options
-
-### `port`
-
-Custom port to start Edgedriver on.
-
-Type: `number`<br />
-Default: _random port_
-
-### `path`
-
-The path on which the driver should run on.
-
-Type: `number`<br />
-Default: `/`
-
-### `args`
-
-Array of arguments to pass to the Geckodriver executable. Every argument should be prefixed with `--`.
-
-Type: `string[]`<br />
-Default: `[]`
 
 ### `outputDir`
 
@@ -92,10 +57,12 @@ The name of the log file to be written in outputDir.
 Type: `string`<br />
 Default: `wdio-geckodriver.log`
 
-### `edgedriverCustomPath`
+### `edgedriverOptions`
 
-Type: `string`<br />
-Default: _path to local or global installed Geckodriver_
+Options that are passed into EdgeDriver. See [driver docs](https://github.com/webdriverio-community/node-edgedriver#options) for more information.
+
+Type: `EdgedriverParameters`<br />
+Default: _`{}`_
 
 
 ----
