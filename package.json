@@ -4,7 +4,7 @@
   "description": "WebdriverIO service to start & stop EdgeDriver",
   "author": "Rafal Skorka",
   "license": "MIT",
-  "homepage": "https://github.com/webdriverio-community/wdio-edgedriver-service#readme",
+  "homepage": "https://webdriver.io",
   "keywords": [
     "wdio",
     "edgedriver",
