@@ -31,6 +31,10 @@ export const isEdge = (capabilities: Capabilities.Capabilities | Capabilities.Mu
     }
 
     for (const c in mcap) {
+        if (!mcap[c].capabilities) {
+            continue
+        }
+
         const browserName = (mcap[c].capabilities as Capabilities.Capabilities).browserName
         if (browserName && browserName.includes('edge')) {
             return true
