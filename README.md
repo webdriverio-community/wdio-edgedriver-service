@@ -1,3 +1,5 @@
+⚠️ __DEPRECATION WARNING:__ This service got deprecated and is no longer maintained. If you use WebdriverIO __v8.14__ or higher. We recommend to remove the service as dependency and from your WebdriverIO configuration as it is no longer needed. For more information, please read [this blog post](https://webdriver.io/blog/2023/07/31/driver-management).
+
 # WDIO EdgeDriver Service [![Tests](https://github.com/webdriverio-community/wdio-edgedriver-service/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/webdriverio-community/wdio-edgedriver-service/actions/workflows/test.yml) [![Audit](https://github.com/webdriverio-community/wdio-edgedriver-service/actions/workflows/audit.yml/badge.svg)](https://github.com/webdriverio-community/wdio-edgedriver-service/actions/workflows/audit.yml)
 
 This service helps you to run Microsoft WebDriver (Edge) seamlessly when running tests with the [WDIO testrunner](https://webdriver.io/docs/gettingstarted.html).
